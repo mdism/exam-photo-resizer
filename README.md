@@ -1,6 +1,8 @@
 # Exam Photo Resizer
 
+
 Resize photos, signatures and thumb impressions to the exact pixel size and KB range that online exam and job application forms ask for. Crop, zoom, black-and-white and an optional name and date strip.
+
 
 **Live:** https://tools.shaikhismail.com/exam-photo-resizer/ · part of the [free tools](https://tools.shaikhismail.com/) by [Mohammed Ismail Shaikh](https://shaikhismail.com)
 
@@ -63,3 +65,4 @@ python scripts/bump_version.py 1.4.0 "What changed"
 ## License
 
 MIT, see [LICENSE](LICENSE).
+### tool-exam-photo-resizer 
