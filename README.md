@@ -69,4 +69,4 @@ python scripts/bump_version.py 1.4.0 "What changed"
 ## License
 
 MIT, see [LICENSE](LICENSE).
-# tool-exam-photo-resizer 
+### tool-exam-photo-resizer 
