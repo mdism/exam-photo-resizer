@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0 — 2026-10-27
+- Hosted on GitHub Pages: a workflow publishes public/ on every push; repo renamed to exam-photo-resizer (its URL path)
+- Bot check now confirmed by a Cloudflare Worker; page refuses to run inside another site's frame
+
 ## 1.3.0 — 2026-10-27
 - Moved to https://tools.shaikhismail.com/exam-photo-resizer/ (one subdomain for all tools); security rules and the bot check now come from the tools-hub repo
 

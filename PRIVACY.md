@@ -14,21 +14,21 @@ When you choose a photo, your browser crops, resizes and compresses it on a canv
 
 If anything has to be held while it is being processed, it is held only temporarily in your browser's memory for that tab, and it is deleted as soon as processing finishes, when you clear the list, or when you close or reload the tab. Download links are cancelled a few seconds after you click them.
 
-The page's security policy only lets it talk to this website, and the only thing it ever sends is the one-time bot-check token. Your photos and signatures are never part of any request.
+The page's security policy only lets it talk to this website and that verification service, and the only thing it ever sends is the one-time bot-check token. Your photos and signatures are never part of any request.
 
 ## What is stored on your device
 
 Only one thing, and only if you use it: when you switch between light and dark theme, that choice is saved in your browser's local storage so the page remembers it. It never leaves your device, and you can clear it any time from your browser settings.
 
-## What the web server sees
+## What the web host sees
 
-Like every website, the hosting provider (MilesWeb) automatically keeps standard access logs when the page loads: your IP address, the date and time, the page requested and your browser type. These logs are used only to keep the site secure and running, are kept for a limited time, and never contain your photos and signatures or anything you type into the tool. We do not use them to identify or follow you, and our bot-check code writes no logs of its own.
+This site is hosted on GitHub Pages. Like every web host, GitHub automatically records basic technical data when a page loads, such as your IP address, to deliver the page and protect its service. GitHub handles that under the GitHub privacy statement. It never includes your photos and signatures or anything you type into the tool, and we do not receive it.
 
 ## Bot protection (Cloudflare Turnstile)
 
 To keep bots and spammers out, the tool asks for a quick Cloudflare Turnstile check before you can use it. Cloudflare looks at technical signals from your browser, such as your IP address and browser details, to tell people from bots. It does not see your photos and signatures or anything you type into the tool.
 
-When the check passes, your browser gets a one-time token. Our server sends that token to Cloudflare to confirm it, gets a yes or no back, and keeps nothing. The token is not stored and is not linked to you. Cloudflare handles its part under the <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare privacy policy</a>.
+When the check passes, your browser gets a one-time token. Our small verification service, which also runs on Cloudflare, sends that token to Cloudflare to confirm it, gets a yes or no back, and keeps nothing. The token is not stored and is not linked to you. Cloudflare handles its part under the <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare privacy policy</a>.
 
 ## Children
 

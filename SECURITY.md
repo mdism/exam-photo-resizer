@@ -1,17 +1,16 @@
 # Security
 
-This tool is a static page served from https://tools.shaikhismail.com/exam-photo-resizer/: no database, no forms, no uploads. The server-wide protection (`.htaccess` and the Turnstile endpoint) lives in the [tools-hub](https://github.com/mdism/tools-hub) repo and covers every tool. Files and inputs are processed only in the visitor's browser.
+This tool is a static page on GitHub Pages at https://tools.shaikhismail.com/exam-photo-resizer/: no server code, no database, no forms, no uploads.
+Files and inputs are processed only in the visitor's browser.
 
 ## What protects it
 
-- **Content Security Policy** (as a `<meta>` tag here, and as a header from tools-hub's `.htaccess`): only scripts, styles, fonts and images from this site and Cloudflare Turnstile can load, and the page may only talk to this site (`connect-src 'self'`), which it uses solely for the bot-check token.
-- **Bot check**: Cloudflare Turnstile must pass before the tool unlocks, and tools-hub's `/api/verify.php` confirms every token with Cloudflare on the server, checks the hostname, accepts only same-origin POSTs and stores nothing.
-- **Secret handling**: the Turnstile secret is never in any repo. See tools-hub's README.
-- **HTTPS only**, with HSTS.
-- **No other third parties**: libraries and the font are served from this repo, not a CDN.
-- **Other headers**: `X-Frame-Options: DENY` (no clickjacking), `nosniff`, `Referrer-Policy: no-referrer`, a locked-down `Permissions-Policy`.
-- **Server rules**: only GET/HEAD allowed (POST only to `api/verify.php`), dotfiles and `.git` hidden, directory listing off, PHP/WordPress probes and known scanner bots refused.
-- **In the code**: user-supplied text (file names, inputs) is always written with `textContent`, never as HTML; files are checked by their real signature, not just the extension; file size and count limits stop a tab from freezing.
+- **Content Security Policy** (a `<meta>` tag in each page): only scripts, styles, fonts and images from this site and Cloudflare Turnstile can load, and the page may only talk to this site and the bot-check Worker (`connect-src 'self' https://*.workers.dev`).
+- **Bot check**: Cloudflare Turnstile must pass before the tool unlocks. A Cloudflare Worker (code in the [mdism.github.io](https://github.com/mdism/mdism.github.io) repo) confirms each token with Cloudflare, checks the hostname and origin, and stores nothing. The Turnstile secret lives only in Cloudflare, never in a repo.
+- **HTTPS only**: enforced by GitHub Pages.
+- **No framing**: the page refuses to run inside another site's frame (clickjacking).
+- **No other third parties**: libraries and the font are served from this repo, not a CDN. No analytics, no cookies set by us.
+- **In the code**: user-supplied text is always written with `textContent`, never as HTML; files are checked by their real signature and size before they are read.
 
 ## Reporting a problem
 

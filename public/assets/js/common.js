@@ -1,5 +1,13 @@
 /* Shared helpers for the shaikhismail.com free tools: theme toggle, drop zones, downloads. */
 (function () {
+  // GitHub Pages can't send X-Frame-Options, so refuse to run inside someone else's frame (clickjacking).
+  // Browsers may block the redirect, so the page is hidden either way.
+  if (window.top !== window.self) {
+    document.documentElement.hidden = true;
+    try { window.top.location = window.self.location.href; } catch (e) { /* stay hidden */ }
+    return;
+  }
+
   const root = document.documentElement;
   const KEY = 'theme';
   try { const t = localStorage.getItem(KEY); if (t) root.dataset.theme = t; } catch (e) {}
@@ -81,8 +89,9 @@
   window.Tool = { dropZone, formatBytes, download, baseName, vetFiles, say };
 
   /* ============ BOT CHECK (Cloudflare Turnstile) ============
-     The tool stays locked until Turnstile passes AND our server (api/verify.php) confirms the token
-     with Cloudflare. Nothing is stored: the check runs again on every page load. */
+     The tool stays locked until Turnstile passes AND our verify Worker confirms the token with Cloudflare.
+     The Worker's address lives in one place, /api/config.json on the landing site, so it is never repeated per tool.
+     Nothing is stored: the check runs again on every page load. */
   const SITE_KEY = /(^|\.)shaikhismail\.com$/.test(location.hostname)
     ? '0x4AAAAAAFn0JTqaGdgJmHqL'   // production key (public by design; the secret stays on the server)
     : '1x00000000000000000000AA';  // Cloudflare's always-pass test key for local development
@@ -101,9 +110,13 @@
       lock(true);
       let widgetId = null;
 
+      const verifyUrl = fetch('/api/config.json', { credentials: 'omit', cache: 'no-cache' })
+        .then(r => r.json()).then(c => c.verifyUrl);
+
       const verify = token => {
         tell('Checking…');
-        fetch('/api/verify.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }), credentials: 'omit', cache: 'no-store' })
+        verifyUrl
+          .then(url => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }), credentials: 'omit', cache: 'no-store' }))
           .then(r => r.json())
           .then(res => {
             if (!res.ok) throw new Error('rejected');
