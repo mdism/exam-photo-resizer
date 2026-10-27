@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.0 — 2026-10-27
+- Moved to https://tools.shaikhismail.com/exam-photo-resizer/ (one subdomain for all tools); security rules and the bot check now come from the tools-hub repo
+
 ## 1.2.0 — 2026-10-27
 - Cloudflare Turnstile bot check before the tool unlocks, verified on the server (api/verify.php); the secret stays outside the repo
 - Version number in the footer, linking to this changelog; scripts/bump_version.py for releases

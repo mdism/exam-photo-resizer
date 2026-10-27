@@ -103,7 +103,7 @@
 
       const verify = token => {
         tell('Checking…');
-        fetch('api/verify.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }), credentials: 'omit', cache: 'no-store' })
+        fetch('/api/verify.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }), credentials: 'omit', cache: 'no-store' })
           .then(r => r.json())
           .then(res => {
             if (!res.ok) throw new Error('rejected');

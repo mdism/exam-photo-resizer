@@ -1,5 +1,0 @@
-Contact: mailto:hello@shaikhismail.com
-Expires: 2027-10-27T00:00:00Z
-Preferred-Languages: en
-Canonical: https://photo.shaikhismail.com/.well-known/security.txt
-Policy: https://photo.shaikhismail.com/privacy.html

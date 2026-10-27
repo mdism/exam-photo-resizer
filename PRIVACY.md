@@ -1,6 +1,6 @@
 # Privacy policy: Exam Photo Resizer
 
-Live page: https://photo.shaikhismail.com/privacy.html
+Live page: https://tools.shaikhismail.com/exam-photo-resizer/privacy.html
 
 ## The short version
 

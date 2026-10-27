@@ -1,0 +1,7 @@
+{
+  "name": "Exam Photo Resizer",
+  "icon": "Ph",
+  "desc": "Resize photos and signatures to exact KB and pixel sizes for exam forms.",
+  "status": "live",
+  "order": 30
+}
