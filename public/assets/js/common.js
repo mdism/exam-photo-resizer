@@ -48,5 +48,35 @@
 
   function baseName(name) { return name.replace(/\.[^.]+$/, ''); }
 
-  window.Tool = { dropZone, formatBytes, download, baseName };
+  /* Real file type from the first bytes, so a renamed .exe or a broken file is refused before we parse it. */
+  const SIGNATURES = {
+    jpeg: b => b[0] === 0xFF && b[1] === 0xD8 && b[2] === 0xFF,
+    png:  b => b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4E && b[3] === 0x47,
+    webp: b => b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50,
+    pdf:  b => { for (let i = 0; i + 4 < b.length; i++) if (b[i] === 0x25 && b[i + 1] === 0x50 && b[i + 2] === 0x44 && b[i + 3] === 0x46 && b[i + 4] === 0x2D) return true; return false; },
+  };
+
+  const LABEL = { jpeg: 'JPG', png: 'PNG', webp: 'WebP', pdf: 'PDF' };
+  const listKinds = k => k.length > 1 ? k.slice(0, -1).map(x => LABEL[x]).join(', ') + ' or ' + LABEL[k[k.length - 1]] : LABEL[k[0]];
+
+  /**
+   * Keep only files that really are one of `kinds`, are under `maxMB`, and fit in `maxCount`.
+   * Returns { ok: File[], problems: string[] } with plain-language reasons for anything refused.
+   */
+  async function vetFiles(files, { kinds, maxMB, maxCount }) {
+    const ok = [], problems = [];
+    for (const f of files) {
+      if (ok.length >= maxCount) { problems.push(`Only ${maxCount} files at a time, so the rest were skipped.`); break; }
+      if (f.size > maxMB * 1024 * 1024) { problems.push(`${f.name} is larger than ${maxMB} MB.`); continue; }
+      const head = new Uint8Array(await f.slice(0, 1024).arrayBuffer());
+      if (!kinds.some(k => SIGNATURES[k](head))) { problems.push(`${f.name} is not a ${listKinds(kinds)} file.`); continue; }
+      ok.push(f);
+    }
+    return { ok, problems };
+  }
+
+  /** Show a message in `el` as plain text (never HTML), or hide it when empty. */
+  function say(el, msg) { el.textContent = msg || ''; el.hidden = !msg; }
+
+  window.Tool = { dropZone, formatBytes, download, baseName, vetFiles, say };
 })();

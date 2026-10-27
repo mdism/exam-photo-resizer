@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Exam Photo Resizer — Ismail Shaikh</title>
 <meta name="description" content="Free exam photo and signature resizer. Get exact pixel size and KB limits for online application forms, in your browser.">
@@ -9,10 +11,7 @@
 <meta property="og:title" content="Exam Photo Resizer — exact KB and pixel sizes">
 <meta property="og:description" content="Resize photos and signatures to exact KB and pixel sizes for exam forms.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23155E3B'/><text x='50' y='68' font-size='58' text-anchor='middle' fill='%23F5821F' font-family='monospace' font-weight='bold'>i</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/tool.css?v=1.0.0">
+<link rel="stylesheet" href="assets/css/tool.css?v=1.1.0">
 <style>
   .preview { display: grid; place-items: center; background: var(--bg-alt); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-height: 220px; }
   .preview canvas { max-width: 100%; max-height: 360px; box-shadow: 0 2px 10px rgba(0,0,0,.15); background: #fff; touch-action: none; cursor: grab; }
@@ -36,7 +35,7 @@
       <div class="prompt" aria-hidden="true"><span class="u">guest</span>@<span class="d">photo</span>:~$ resize --kb 20-50</div>
       <h1>Exam Photo Resizer</h1>
       <p class="lead">Make your photo, signature or thumb impression match the exact pixel size and file size (KB) an online form asks for. Your photo stays on your device.</p>
-      <span class="privacy">● No upload · works offline once loaded</span>
+      <div class="notice" role="note"><span class="ico" aria-hidden="true">✓</span><div><strong>Private by design.</strong> Your photos and signatures are processed on your device and never uploaded. Nothing is saved, nothing is tracked, and everything is gone when you close the tab.<p>No sign-up, no cookies, no analytics. <a href="privacy.html">Privacy policy</a></p></div></div>
     </div>
 
     <div class="grid-2">
@@ -53,8 +52,8 @@
           <div class="muted" style="font-size:12px">These are common sizes. Always check your exam notice and type its numbers below.</div>
         </div>
         <div class="row">
-          <div><label class="f" for="w">Width (px)</label><input id="w" type="number" min="20" inputmode="numeric"></div>
-          <div><label class="f" for="h">Height (px)</label><input id="h" type="number" min="20" inputmode="numeric"></div>
+          <div><label class="f" for="w">Width (px)</label><input id="w" type="number" min="20" max="2000" inputmode="numeric"></div>
+          <div><label class="f" for="h">Height (px)</label><input id="h" type="number" min="20" max="2000" inputmode="numeric"></div>
         </div>
         <div class="row">
           <div><label class="f" for="minKb">Min size (KB)</label><input id="minKb" type="number" min="0" inputmode="numeric"></div>
@@ -63,7 +62,7 @@
         <label class="drop" id="drop">
           <input type="file" accept="image/*">
           <strong>Drop your photo here or tap to choose</strong>
-          <span class="muted">JPG, PNG, WebP or a phone camera photo</span>
+          <span class="muted">JPG, PNG or WebP · up to 40 MB</span>
         </label>
         <div id="adjust" class="stack" hidden>
           <div>
@@ -74,8 +73,8 @@
           <label class="check"><input type="checkbox" id="gray"> Black and white (good for signatures)</label>
           <label class="check"><input type="checkbox" id="stamp"> Add name and date strip at the bottom</label>
           <div class="row" id="stampFields" hidden>
-            <div><label class="f" for="stampName">Name</label><input id="stampName" type="text" autocomplete="name"></div>
-            <div><label class="f" for="stampDate">Date</label><input id="stampDate" type="text"></div>
+            <div><label class="f" for="stampName">Name</label><input id="stampName" type="text" maxlength="40" autocomplete="off"></div>
+            <div><label class="f" for="stampDate">Date</label><input id="stampDate" type="text" maxlength="20" autocomplete="off"></div>
           </div>
         </div>
       </div>
@@ -96,11 +95,11 @@
 <footer class="foot">
   <div class="wrap">
     <span>&copy; <span id="yr">2026</span> <a href="https://shaikhismail.com/">Mohammed Ismail Shaikh</a> · free and open source</span>
-    <span><a href="https://shaikhismail.com/tools/">More free tools</a></span>
+    <span><a href="privacy.html">Privacy</a> · <a href="https://shaikhismail.com/tools/">More free tools</a></span>
   </div>
 </footer>
 
-<script src="assets/js/common.js?v=1.0.0"></script>
-<script src="assets/js/app.js?v=1.0.0"></script>
+<script src="assets/js/common.js?v=1.1.0"></script>
+<script src="assets/js/app.js?v=1.1.0"></script>
 </body>
 </html>

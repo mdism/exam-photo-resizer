@@ -1,6 +1,6 @@
 /* Exam Photo Resizer: crops to exact pixels, then searches JPEG quality to land inside a KB range. */
 (function () {
-  const { dropZone, download, baseName } = window.Tool;
+  const { dropZone, download, baseName, vetFiles } = window.Tool;
   const $ = s => document.querySelector(s);
 
   const PRESETS = {
@@ -35,13 +35,23 @@
   [zoom, gray, stampName, stampDate].forEach(el => el.addEventListener('input', render));
   stamp.addEventListener('change', () => { $('#stampFields').hidden = !stamp.checked; render(); });
 
-  dropZone($('#drop'), files => {
-    const file = files.find(f => f.type.startsWith('image/'));
-    if (!file) return;
-    const i = new Image();
-    i.onload = () => { img = i; fileName = baseName(file.name); offX = offY = 0; zoom.value = 1; $('#adjust').hidden = false; render(); };
-    i.onerror = () => { status.innerHTML = '<span class="err">This file could not be opened as an image. Try a JPG or PNG.</span>'; };
-    i.src = URL.createObjectURL(file);
+  /** Status line built from plain-text pieces; [cls, text] pairs become coloured spans. Never parses HTML. */
+  function setStatus(...parts) {
+    status.textContent = '';
+    parts.forEach(p => {
+      if (typeof p === 'string') return status.append(p);
+      const s = document.createElement('span'); s.className = p[0]; s.textContent = p[1]; status.append(s);
+    });
+  }
+
+  dropZone($('#drop'), async files => {
+    const { ok, problems } = await vetFiles(files.slice(0, 1), { kinds: ['jpeg', 'png', 'webp'], maxMB: 40, maxCount: 1 });
+    const file = ok[0];
+    if (!file) return setStatus(['err', problems.join(' ') || 'Choose a JPG, PNG or WebP photo.']);
+    const i = new Image(), url = URL.createObjectURL(file);
+    i.onload = () => { URL.revokeObjectURL(url); img = i; fileName = baseName(file.name); offX = offY = 0; zoom.value = 1; $('#adjust').hidden = false; render(); };
+    i.onerror = () => { URL.revokeObjectURL(url); setStatus(['err', 'This file could not be opened as an image. Try a JPG or PNG.']); };
+    i.src = url;
   });
 
   /* Drag to pan */
@@ -58,7 +68,8 @@
 
   /** Paint the photo into the canvas at exact output size. Returns false if not ready. */
   function draw() {
-    const w = Math.max(20, parseInt(W.value, 10) || 0), h = Math.max(20, parseInt(H.value, 10) || 0);
+    const clampPx = el => Math.min(2000, Math.max(20, parseInt(el.value, 10) || 0)); // caps memory use
+    const w = clampPx(W), h = clampPx(H);
     canvas.width = w; canvas.height = h;
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
     if (!img) return false;
@@ -148,10 +159,10 @@
     $('#outKb').textContent = `${kb.toFixed(1)} KB`;
     dl.disabled = false;
     if (best.size > maxB) {
-      status.innerHTML = `<span class="warn">Still above ${MAX.value} KB at the lowest quality.</span> Try a smaller width and height.`;
+      setStatus(['warn', `Still above ${MAX.value} KB at the lowest quality.`], ' Try a smaller width and height.');
     } else {
       const note = padded ? ' Small image, so the file was padded up to the minimum size (the picture is unchanged).' : '';
-      status.innerHTML = `<span class="good">✓ Ready.</span> ${canvas.width}×${canvas.height} px, ${kb.toFixed(1)} KB, JPG quality ${Math.round(bestQ * 100)}.${note}`;
+      setStatus(['good', '✓ Ready.'], ` ${canvas.width}×${canvas.height} px, ${kb.toFixed(1)} KB, JPG quality ${Math.round(bestQ * 100)}.${note}`);
     }
   }
 
