@@ -99,6 +99,12 @@ main { flex: 1; padding: 28px 0 48px; }
 .notice .ico { flex: none; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--green); color: var(--bg); font-weight: 800; }
 .notice strong { color: var(--green); }
 .notice p { margin: 2px 0 0; color: var(--ink-soft); }
+.gate { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 12px 14px; }
+.gate .gate-title { font-size: 13px; font-weight: 700; }
+.gate .gate-state { font-size: 12px; color: var(--ink-soft); flex-basis: 100%; }
+.gate .gate-widget { min-height: 65px; }
+[data-gated].locked { opacity: .45; filter: grayscale(.4); pointer-events: none; user-select: none; }
+.ver { color: inherit; }
 .prose { max-width: 72ch; }
 .prose h2 { font-size: 17px; margin-top: 1.6em; }
 .prose li + li { margin-top: 4px; }

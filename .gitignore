@@ -4,3 +4,7 @@ Thumbs.db
 node_modules/
 .vscode/
 .idea/
+
+# Turnstile secret: never commit
+config/turnstile.php
+.env

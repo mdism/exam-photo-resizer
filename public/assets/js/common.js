@@ -79,4 +79,60 @@
   function say(el, msg) { el.textContent = msg || ''; el.hidden = !msg; }
 
   window.Tool = { dropZone, formatBytes, download, baseName, vetFiles, say };
+
+  /* ============ BOT CHECK (Cloudflare Turnstile) ============
+     The tool stays locked until Turnstile passes AND our server (api/verify.php) confirms the token
+     with Cloudflare. Nothing is stored: the check runs again on every page load. */
+  const SITE_KEY = /(^|\.)shaikhismail\.com$/.test(location.hostname)
+    ? '0x4AAAAAAFn0JTqaGdgJmHqL'   // production key (public by design; the secret stays on the server)
+    : '1x00000000000000000000AA';  // Cloudflare's always-pass test key for local development
+  const area = document.querySelector('[data-gated]');
+  const gate = document.getElementById('gate');
+
+  if (area && gate) {
+    const state = gate.querySelector('.gate-state');
+    const box = gate.querySelector('.gate-widget');
+    const lock = on => { area.inert = on; area.classList.toggle('locked', on); };
+    const tell = (text, cls) => { state.textContent = text; state.className = 'gate-state ' + (cls || ''); };
+
+    if (location.protocol === 'file:') {
+      gate.hidden = true; // opened straight from disk while developing: no server to verify against
+    } else {
+      lock(true);
+      let widgetId = null;
+
+      const verify = token => {
+        tell('Checking…');
+        fetch('api/verify.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }), credentials: 'omit', cache: 'no-store' })
+          .then(r => r.json())
+          .then(res => {
+            if (!res.ok) throw new Error('rejected');
+            lock(false);
+            tell('✓ Verified. You can use the tool.', 'good');
+            setTimeout(() => { gate.hidden = true; }, 1800);
+          })
+          .catch(() => {
+            tell('The check did not pass. Please try again.', 'err');
+            if (window.turnstile && widgetId !== null) window.turnstile.reset(widgetId);
+          });
+      };
+
+      window.__onTurnstileLoad = () => {
+        widgetId = window.turnstile.render(box, {
+          sitekey: SITE_KEY,
+          theme: 'auto',
+          callback: verify,
+          'expired-callback': () => tell('The check expired. Please tick it again.', 'warn'),
+          'error-callback': () => { tell('The bot check could not run. Reload the page, or turn off blockers for this site.', 'err'); return true; },
+        });
+        tell('Complete the check to unlock the tool. It usually passes on its own.');
+      };
+
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__onTurnstileLoad';
+      s.async = true;
+      s.onerror = () => tell('The bot check could not load. Check your connection, or turn off blockers for this site, then reload.', 'err');
+      document.head.appendChild(s);
+    }
+  }
 })();
