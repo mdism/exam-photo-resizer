@@ -1,0 +1,9 @@
+---
+# MilesWeb (cPanel) deployment for photo.shaikhismail.com
+# Publishes ONLY the public/ folder. README, LICENSE and .git stay private.
+# DEPLOYPATH must match the subdomain's Document Root in cPanel → Domains.
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/qyotupjl/photo.shaikhismail.com/
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R public/. $DEPLOYPATH
