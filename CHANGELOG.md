@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.0 — 2026-11-03
+- Breadcrumb, a simple input → process → output guide, a Questions section, and better search and share previews (titles, descriptions, structured data, preview image).
+
 ## 1.4.0 — 2026-10-27
 - Hosted on GitHub Pages: a workflow publishes public/ on every push; repo renamed to exam-photo-resizer (its URL path)
 - Bot check now confirmed by a Cloudflare Worker; page refuses to run inside another site's frame
